@@ -41,7 +41,7 @@ streamlit run app.py
 - P2's `AgentSession.ask(user_message, chat_history)` returns `(response_text, chart_path_or_none)`
 - P4 (`app.py`) only ever calls `AgentSession` — never touches `data_tools` or `rag_tools` directly
 
-This is what lets all four of you work in parallel without blocking
+This is what lets all four of us work in parallel without blocking
 on each other. If you need to change a function signature, message
 the team before you do it — it breaks someone else's code silently otherwise.
 
