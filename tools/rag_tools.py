@@ -15,7 +15,7 @@ from google.genai import types
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 TOP_K = 4
-EMBEDDING_MODEL = "text-embedding-004"
+EMBEDDING_MODEL = "gemini-embedding-001"
 GEN_MODEL = "gemini-flash-latest"
 
 _chroma_client = chromadb.PersistentClient(path="chroma_db")
