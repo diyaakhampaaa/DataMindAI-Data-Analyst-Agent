@@ -15,11 +15,6 @@ pip install -r requirements.txt
 cp .env.example .env
 # then paste your Gemini API key into .env
 ```
-
-Get a free Gemini API key at https://aistudio.google.com/apikey if you
-don't have one yet. Share the key with your team privately (WhatsApp,
-not GitHub) — `.env` is gitignored so it won't get committed.
-
 Run the app once everything below is wired up:
 ```bash
 streamlit run app.py
@@ -41,7 +36,7 @@ streamlit run app.py
 - P2's `AgentSession.ask(user_message, chat_history)` returns `(response_text, chart_path_or_none)`
 - P4 (`app.py`) only ever calls `AgentSession` — never touches `data_tools` or `rag_tools` directly
 
-This is what lets all four of you work in parallel without blocking
+This is what lets all four of us work in parallel without blocking
 on each other. If you need to change a function signature, message
 the team before you do it — it breaks someone else's code silently otherwise.
 
