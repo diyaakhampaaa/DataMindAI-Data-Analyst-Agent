@@ -1,10 +1,11 @@
-"""
+="""
 P4 owns this file — Integration & Presentation Lead.
 
 This is the only file that touches Streamlit. It never calls P1 or
 P3's code directly — it only talks to AgentSession (P2's interface),
 which is the contract the whole team agreed on.
 """
+
 import os
 import streamlit as st
 from dotenv import load_dotenv
@@ -27,10 +28,13 @@ if not API_KEY:
 # --- session state setup ---
 if "session" not in st.session_state:
     st.session_state.session = AgentSession(api_key=API_KEY)
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []  # list of (role, content)
+
 if "csv_loaded" not in st.session_state:
     st.session_state.csv_loaded = False
+
 if "pdf_loaded" not in st.session_state:
     st.session_state.pdf_loaded = False
 
@@ -40,19 +44,27 @@ session = st.session_state.session
 with st.sidebar:
     st.header("Upload data")
 
+    # CSV Upload
     csv_file = st.file_uploader("Upload CSV", type=["csv"])
     if csv_file is not None and not st.session_state.csv_loaded:
         with st.spinner("Loading and cleaning CSV..."):
             df = clean_data(load_csv(csv_file))
             session.df = df
             st.session_state.csv_loaded = True
+
         st.success(f"CSV loaded: {df.shape[0]} rows, {df.shape[1]} columns")
         st.dataframe(df.head(3))
 
+    # PDF Upload
     pdf_file = st.file_uploader("Upload PDF", type=["pdf"])
     if pdf_file is not None and not st.session_state.pdf_loaded:
         with st.spinner("Extracting, chunking, and embedding PDF..."):
-            temp_path = f"/tmp/{pdf_file.name}"
+
+            temp_dir = os.path.join(os.path.dirname(__file__), "temp")
+            os.makedirs(temp_dir, exist_ok=True)
+
+            temp_path = os.path.join(temp_dir, "Result.pdf")
+
             with open(temp_path, "wb") as f:
                 f.write(pdf_file.getbuffer())
 
@@ -62,8 +74,8 @@ with st.sidebar:
 
             session.doc_id = doc_id
             st.session_state.pdf_loaded = True
-        st.success(f"PDF processed: {len(chunks)} chunks indexed")
 
+    # Reset Session
     if st.button("Reset session"):
         st.session_state.clear()
         st.rerun()
@@ -77,13 +89,19 @@ user_input = st.chat_input("Ask a question about your data or document...")
 
 if user_input:
     st.session_state.chat_history.append(("user", user_input))
+
     with st.chat_message("user"):
         st.write(user_input)
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response, chart_path = session.ask(user_input, st.session_state.chat_history[:-1])
+            response, chart_path = session.ask(
+                user_input,
+                st.session_state.chat_history[:-1],
+            )
+
             st.write(response)
+
             if chart_path and os.path.exists(chart_path):
                 st.image(chart_path)
 
