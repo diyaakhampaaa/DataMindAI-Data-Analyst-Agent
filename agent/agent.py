@@ -119,6 +119,15 @@ class AgentSession:
         messages.append(HumanMessage(content=user_message))
 
         result = self.graph.invoke({"messages": messages})
-        response_text = result["messages"][-1].content
+        last_message = result["messages"][-1]
+
+        if isinstance(last_message.content, list):
+            response_text = "".join(
+                block["text"]
+                for block in last_message.content
+                if isinstance(block, dict) and block.get("type") == "text"
+            )
+        else:
+            response_text = last_message.content
 
         return response_text, self.last_chart_path
