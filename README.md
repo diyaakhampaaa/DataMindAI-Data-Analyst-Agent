@@ -110,7 +110,7 @@ AgentSession.ask()  [P2 — LangGraph ReAct agent]
                               ChromaDB (chroma_db/) — per-document collections
 ```
 
-## Known limitations (be upfront about these in the report/demo)
+## known limitations (be upfront about these in the report/demo)
 
 - Embeddings are generated one chunk at a time in a loop — fine for
   capstone-scale PDFs, would need batching for large-scale production use
