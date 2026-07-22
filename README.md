@@ -160,6 +160,13 @@ http://localhost:8501
 
 ---
 
+## Best Practices
+
+- Use clean and well-structured datasets.
+- Ensure column names are meaningful.
+- Remove unnecessary columns before uploading.
+- Use UTF-8 encoded CSV files for best compatibility.
+
 # Usage
 
 ### CSV Analytics
