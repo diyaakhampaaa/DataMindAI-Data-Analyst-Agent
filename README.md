@@ -60,35 +60,26 @@ The agent always calls a tool to get real numbers or real document text rather t
 | Deployment | Streamlit Community Cloud |
 
 ---
-
-## Project structure
-```text
-DataMind-AI/
-│
+## Project Structure
+``` text
+.
+├── .streamlit/
+│   └── config.toml
+├── agent/
+│   ├── __init__.py
+│   ├── agent.py
+│   └── prompts.py
+├── tools/
+│   ├── __init__.py
+│   ├── data_tools.py
+│   └── rag_tools.py
+├── data/
+│   ├── sample_employees.csv
+│   └── sample_paper.pdf
 ├── app.py
 ├── requirements.txt
 ├── README.md
-├── .env
-│
-├── agent/
-│   ├── graph.py
-│   ├── router.py
-│   └── tools.py
-│
-├── analytics/
-│   ├── csv_analyzer.py
-│   ├── visualization.py
-│   └── statistics.py
-│
-├── rag/
-│   ├── embeddings.py
-│   ├── retriever.py
-│   └── vector_store.py
-│
-├── uploads/
-├── assets/
-└── docs/
-
+└── .gitignore
 ```
 ---
 
