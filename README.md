@@ -96,11 +96,17 @@ DataMind-AI/
 
 ```bash
 git clone https://github.com/diyaakhampaaa/DataMindAI-Data-Analyst-Agent.git
+
 cd DataMindAI-Data-Analyst-Agent
+
 python -m venv venv
+
 venv\Scripts\activate        # macOS/Linux: source venv/bin/activate
+
 pip install -r requirements.txt
+
 cp .env.example .env         # then add your Gemini API key
+
 streamlit run app.py
 ```
 
@@ -138,8 +144,8 @@ Get a free Gemini API key at [aistudio.google.com/apikey](https://aistudio.googl
 
 ## Team
 
-| Name | Role |
-|---|---|
+| Name | 
+|---|
 | Diya Khampa |
 | Aanchal Tanwar |
 | Diya Gupta |
