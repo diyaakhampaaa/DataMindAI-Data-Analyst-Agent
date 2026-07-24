@@ -62,7 +62,7 @@ The agent always calls a tool to get real numbers or real document text rather t
 ---
 
 ## Project structure
-
+```text
 DataMind-AI/
 │
 ├── app.py
@@ -89,6 +89,7 @@ DataMind-AI/
 ├── assets/
 └── docs/
 
+```
 ---
 
 ## Running it locally
