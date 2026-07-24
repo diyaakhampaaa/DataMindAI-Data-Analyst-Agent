@@ -1,29 +1,22 @@
 # DataMind AI
 
-**DataMind AI** is an intelligent data analytics and document question-answering platform that leverages **Agentic AI**, **Retrieval-Augmented Generation (RAG)**, and **Large Language Models (LLMs)** to simplify data exploration through natural language. The system enables users to upload structured CSV datasets or PDF documents and interact with them conversationally, eliminating the need for complex SQL queries, manual analysis, or extensive document searching.
+**DataMind AI** is a conversational data analyst agent that lets you ask questions about a CSV dataset or a PDF document in plain English — no SQL, no manual digging through spreadsheets or pages. Built as our capstone for the IGDTUW × Sansoftech Generative & Agentic AI Systems Development internship (SIP 2026).
 
-Built using **LangGraph**, **LangChain**, **Google Gemini 2.5 Flash**, **FAISS**, and **Streamlit**, DataMind AI intelligently routes user requests to the appropriate analytical workflow, providing accurate insights, visualizations, and context-aware responses.
+**Live demo:** [https://datamindai-data-analyst-agent-vv2p3rutdftcgbsxjbxrdn.streamlit.app/](https://datamindai-data-analyst-agent-vv2p3rutdftcgbsxjbxrdn.streamlit.app/) 
+---
+
+## What it does
+
+Upload a CSV and ask things like *"what's the average salary by department?"* or *"show me a bar chart of sales by region"* — the agent computes real answers from your data and generates charts on request.
+
+Upload a PDF and ask things like *"what does this paper say about X?"* — the agent retrieves the relevant passages and answers grounded in the actual document, citing which page the answer came from.
+
+A single LangGraph agent handles both — it decides which tool to call based on what you're asking, so you can work with a dataset and a document in the same conversation.
 
 ---
 
-## Key Features
-
-| Feature | Description |
-|---------|-------------|
-| Conversational Data Analysis | Analyze CSV datasets using natural language queries. |
-| PDF Question Answering | Retrieve contextual answers from uploaded PDF documents using RAG. |
-| Intelligent Agent Routing | LangGraph dynamically selects the appropriate analytical tool based on user intent. |
-| Automated Visualizations | Generate charts and graphs directly from user queries. |
-| Statistical Analysis | Perform descriptive statistics, filtering, aggregation, and correlation analysis. |
-| Semantic Search | Retrieve relevant document sections using vector embeddings and similarity search. |
-| Interactive Web Interface | User-friendly Streamlit application for seamless interaction. |
-
----
-
-# System Architecture
-
-```
-                    User
+## Architecture
+                     User
                       │
                       ▼
            Natural Language Query
@@ -43,31 +36,29 @@ Built using **LangGraph**, **LangChain**, **Google Gemini 2.5 Flash**, **FAISS**
                       │
                       ▼
           Analytical Response / Charts
-```
+
+The agent always calls a tool to get real numbers or real document text rather than generating answers from memory — this is the core mitigation for hallucination risk in the project.
 
 ---
 
-# Technology Stack
+## Tech stack
 
-| Category | Technologies |
-|----------|--------------|
-| Programming Language | Python |
+| Category | Technology |
+|---|---|
+| Agent framework | LangGraph + LangChain |
+| LLM | Google Gemini (`gemini-flash-latest`) |
+| Embeddings | Google Gemini (`gemini-embedding-001`) |
+| Vector store | ChromaDB |
+| Data analysis | Pandas, NumPy |
+| Visualization | Matplotlib |
+| PDF parsing | pypdf |
 | Frontend | Streamlit |
-| Agent Framework | LangGraph |
-| LLM Framework | LangChain |
-| Large Language Model | Google Gemini 2.5 Flash |
-| Data Analysis | Pandas, NumPy |
-| Visualization | Plotly, Matplotlib |
-| Document Processing | PyPDF2 |
-| Embeddings | Google Generative AI Embeddings |
-| Vector Database | FAISS |
-| Environment Management | Python Virtual Environment |
+| Deployment | Streamlit Community Cloud |
 
 ---
 
-# Project Structure
+## Project structure
 
-```
 DataMind-AI/
 │
 ├── app.py
@@ -93,178 +84,67 @@ DataMind-AI/
 ├── uploads/
 ├── assets/
 └── docs/
-```
 
 ---
 
-# Installation
-
-### Clone the repository
+## Running it locally
 
 ```bash
-git clone https://github.com/<username>/DataMind-AI.git
-cd DataMind-AI
-```
-
-### Create a virtual environment
-
-```bash
+git clone https://github.com/diyaakhampaaa/DataMindAI-Data-Analyst-Agent.git
+cd DataMindAI-Data-Analyst-Agent
 python -m venv venv
-```
-
-### Activate the environment
-
-**Windows**
-
-```bash
-venv\Scripts\activate
-```
-
-**Linux / macOS**
-
-```bash
-source venv/bin/activate
-```
-
-### Install dependencies
-
-```bash
+venv\Scripts\activate        # macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
-```
-
----
-
-# Environment Variables
-
-Create a `.env` file in the project root and add your Google Gemini API key.
-
-```env
-GOOGLE_API_KEY=YOUR_API_KEY
-```
-
----
-
-# Running the Application
-
-Launch the Streamlit application using:
-
-```bash
+cp .env.example .env         # then add your Gemini API key
 streamlit run app.py
 ```
 
-The application will be available at:
+Get a free Gemini API key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 
-```
-http://localhost:8501
-```
+> **Free tier limits:** ~5 requests/minute and a small daily cap per key. If you hit a `429 RESOURCE_EXHAUSTED` error, wait a minute — it's a rate limit, not a bug.
 
 ---
 
-## Best Practices
+## Key design decisions
 
-- Use clean and well-structured datasets.
-- Ensure column names are meaningful.
-- Remove unnecessary columns before uploading.
-- Use UTF-8 encoded CSV files for best compatibility.
-
-# Usage
-
-### CSV Analytics
-
-Upload a CSV dataset and ask questions such as:
-
-- Show summary statistics.
-- Which product generated the highest revenue?
-- Display monthly sales trends.
-- Find correlations between variables.
-- Show the top 10 performing records.
-
-### PDF Question Answering
-
-Upload a PDF document and ask:
-
-- Summarize the document.
-- What are the key findings?
-- Explain the methodology.
-- What conclusions were drawn?
-- Extract important information from Chapter 3.
+- **Tool-grounded answers, not free generation** — every numeric answer and every document answer comes from an actual Pandas computation or retrieved PDF chunk, not the model's guess. This directly addresses hallucination risk.
+- **Page-cited RAG** — PDF chunks retain their source page number from extraction through to the final answer, so document answers can cite exactly where they came from.
+- **Single hybrid agent** — rather than separate CSV and PDF tools with no shared interface, one LangGraph agent routes between both based on the question, so a single conversation can span both data types.
 
 ---
 
-# Workflow
+## Known limitations
 
-1. The user uploads a CSV file or PDF document.
-2. A natural language query is submitted through the interface.
-3. The LangGraph agent identifies the user's intent.
-4. Based on the query, the agent routes the request to either:
-   - CSV Analysis Pipeline
-   - Retrieval-Augmented Generation (RAG) Pipeline
-5. The selected pipeline processes the request.
-6. Google Gemini generates a contextual response, while charts or statistical summaries are produced when required.
+- Embeddings are generated one chunk at a time — fine at capstone scale, would need batching for large documents
+- Chat memory is raw message history, not summarized — long conversations will eventually hit context limits
+- No authentication or multi-user isolation — single-session by design
+- Free-tier API rate limits constrain concurrent usage during demos
 
 ---
 
-# Evaluation Summary
+## Future enhancements
 
-| Metric | Performance |
-|---------|------------:|
-| CSV Analysis Accuracy | 85% |
-| Tool Selection Accuracy | 90% |
-| Chart Generation Success | 80% |
-| Average Response Time | 8–10 seconds |
+- Multi-document RAG (query across several PDFs at once)
+- SQL database integration alongside CSV upload
+- Persistent chat memory across sessions
+- Exportable reports (PDF/Excel)
 
 ---
 
-# Future Enhancements
+## Team
 
-- Multi-document Retrieval-Augmented Generation
-- SQL Database Integration
-- Voice-based Natural Language Interface
-- Advanced Dashboard Generation
-- User Authentication and Role Management
-- Cloud Deployment
-- Persistent Agent Memory
-- Exportable Reports (PDF/Excel)
+| Name | Role |
+|---|---|
+| Diya Khampa |
+| Aanchal Tanwar |
+| Diya Gupta |
+| Kanika Goyal | 
 
 ---
 
-# Screenshots
+## Acknowledgements
 
-The following screenshots can be added after deployment:
-
-- Home Page
-- CSV Upload Interface
-- PDF Upload Interface
-- Data Analysis Results
-- Chart Generation
-- Document Question Answering
+Built as part of the **Generative & Agentic AI Systems Development** Summer Internship Program 2026, IGDTUW Department of IT in collaboration with Sansoftech Services.
 
 ---
 
-# References
-
-- LangChain
-- LangGraph
-- Google Gemini API
-- Streamlit
-- FAISS
-- Pandas
-- Plotly
-- PyPDF2
-
----
-
-# Team Members
-
-| Name |
-|------|
-| **Diya Khampa** |
-| **Aanchal Tanwar** |
-| **Diya Gupta** |
-| **Kanika Goyal** |
-
----
-
-# License
-
-This project was developed as part of an academic Software Innovation Project (SIP) and is intended for educational and research purposes.
