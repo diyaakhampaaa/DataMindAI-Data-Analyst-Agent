@@ -16,26 +16,30 @@ A single LangGraph agent handles both — it decides which tool to call based on
 ---
 
 ## Architecture
-                     User
-                      │
-                      ▼
-           Natural Language Query
-                      │
-                      ▼
-              LangGraph Agent
-                      │
-      ┌───────────────┴────────────────┐
-      │                                │
-      ▼                                ▼
- CSV Analysis Pipeline          RAG Pipeline
- (Pandas & Plotly)        (Embeddings + FAISS)
-      │                                │
-      └───────────────┬────────────────┘
-                      ▼
-           Google Gemini 2.5 Flash
-                      │
-                      ▼
-          Analytical Response / Charts
+
+```text
+                           User
+                             │
+                             ▼
+                 Natural Language Query
+                             │
+                             ▼
+                      LangGraph Agent
+                             │
+               ┌─────────────┴─────────────┐
+               │                           │
+               ▼                           ▼
+     CSV Analysis Pipeline           RAG Pipeline
+      (Pandas + Plotly)        (Embeddings + FAISS)
+               │                           │
+               └─────────────┬─────────────┘
+                             │
+                             ▼
+                  Google Gemini 2.5 Flash
+                             │
+                             ▼
+                Analytical Response / Charts
+```
 
 The agent always calls a tool to get real numbers or real document text rather than generating answers from memory — this is the core mitigation for hallucination risk in the project.
 
